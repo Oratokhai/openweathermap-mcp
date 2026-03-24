@@ -7,7 +7,7 @@ load_dotenv()
 
 mcp = FastMCP("openweathermap")
 
-API_KEY = os.environ.get("OPENWEATHER_API_KEY")
+API_KEY = os.environ.get("7a9099c9136d8bdc66097872f88b6b64")
 BASE_URL = "http://api.openweathermap.org/data/2.5"
 
 @mcp.tool()
@@ -32,7 +32,7 @@ def get_forecast(city: str, days: int = 5) -> dict:
             "q": city,
             "appid": API_KEY,
             "units": "metric",
-            "cnt": days * 8  # API returns data every 3 hours
+            "cnt": days * 8
         }
     )
     return response.json()
@@ -51,6 +51,9 @@ def get_weather_by_coordinates(lat: float, lon: float) -> dict:
     )
     return response.json()
 
+app = mcp.get_asgi_app()
+
 if __name__ == "__main__":
+    import uvicorn
     port = int(os.environ.get("PORT", 8000))
-    mcp.run(transport="sse", host="0.0.0.0", port=port)
+    uvicorn.run(app, host="0.0.0.0", port=port)
